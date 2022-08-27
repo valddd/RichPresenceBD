@@ -12,7 +12,6 @@
  * @authorLink https://github.com/valddd/
  * @source https://github.com/valddd/
  * @website https://github.com/valddd/
- * @donate https://www.buymeacoffee.com/vald
  */
 /*
 MIT License
@@ -3737,7 +3736,7 @@ const changelog = {
 	}
 	initialize() {
 	  console.log("Démarrage de AutoStartRichPresence");
-	  window.ZeresPluginLibrary?.PluginUpdater?.checkForUpdate?.("AutoStartRichPresence", changelog.version, "WZAGAY");
+	  window.ZeresPluginLibrary?.PluginUpdater?.checkForUpdate?.("AutoStartRichPresence", changelog.version, "https://raw.githubusercontent.com/valddd/RichPresenceBD/main/richpresence.plugin.js");
 	  BdApi.showToast("AutoStartRichPresence a démarré.");
 	  this.startTime = Date.now();
 	  this.settings = BdApi.loadData("AutoStartRichPresence", "settings") || {};
@@ -3810,13 +3809,13 @@ const changelog = {
 	  this.client = RPClient(this.currentClientID);
 	  this.client.on("setActivityFailed", e => {
 		console.error(e);
-		BdApi.showToast("Failed to set Rich Presence activity.", {type: "error"});
+		BdApi.showToast("Echec de la mise en place du RichPresence.", {type: "error"});
 	  });
 	  this.client.on("loginFailed", async e => {
 		console.error(e);
 		this.client?.removeAllListeners?.();
 		this.client?.disconnect?.();
-		BdApi.showToast("Rich Presence client ID authentication failed. Make sure your client ID is correct.", {type: "error"});
+		BdApi.showToast("Authentification du ClientID a échoué. Assurez vous que le ClientID est correcte.", {type: "error"});
 	  });
 	  this._updateRichPresence();
 	}
@@ -3834,7 +3833,7 @@ const changelog = {
 			url: this.activeProfile.button1URL
 		  });
 		} else {
-		  BdApi.showToast("Invalid button 1 URL.", {type: "error"});
+		  BdApi.showToast("URL du bouton 1 invalide.", {type: "error"});
 		}
 	  }
 	  if (this.activeProfile.button2Label && this.activeProfile.button2URL) {
@@ -3844,7 +3843,7 @@ const changelog = {
 			url: this.activeProfile.button2URL
 		  });
 		} else {
-		  BdApi.showToast("Invalid button 2 URL.", {type: "error"});
+		  BdApi.showToast("URL du bouton 2 invalide.", {type: "error"});
 		}
 	  }
 	  this.client.updatePresence({
@@ -3898,7 +3897,7 @@ const changelog = {
 		await setActivity(this.buildActivityObject());
 	  } catch (e) {
 		console.error(e);
-		BdApi.showToast("Failed to set Rich Presence activity.", {type: "error"});
+		BdApi.showToast("Echec de la mise en place du RichPresence.", {type: "error"});
 	  }
 	}
 	async _stopRichPresenceInjection() {
@@ -3969,26 +3968,26 @@ const changelog = {
 	  }
 	  if (this.activeProfile.button1Label && this.activeProfile.button1URL) {
 		if (this.activeProfile.button1Label.length > 32) {
-		  BdApi.showToast("Button 1 label must not exceed 32 characters.", {type: "error"});
+		  BdApi.showToast("Label du bouton 1 ne doit pas dépasser 32 caractères.", {type: "error"});
 		} else if (validButtonURLRegex.test(this.activeProfile.button1URL)) {
 		  activityObject.args.activity.buttons.push({
 			label: this.activeProfile.button1Label,
 			url: this.activeProfile.button1URL
 		  });
 		} else {
-		  BdApi.showToast("Invalid button 1 URL.", {type: "error"});
+		  BdApi.showToast("URL bouton 1 invalide", {type: "error"});
 		}
 	  }
 	  if (this.activeProfile.button2Label && this.activeProfile.button2URL) {
 		if (this.activeProfile.button2Label.length > 32) {
-		  BdApi.showToast("Button 2 label must not exceed 32 characters.", {type: "error"});
+		  BdApi.showToast("Label du bouton 2 ne doit pas dépasser 32 caractères.", {type: "error"});
 		} else if (validButtonURLRegex.test(this.activeProfile.button2URL)) {
 		  activityObject.args.activity.buttons.push({
 			label: this.activeProfile.button2Label,
 			url: this.activeProfile.button2URL
 		  });
 		} else {
-		  BdApi.showToast("Invalid button 2 URL.", {type: "error"});
+		  BdApi.showToast("URL bouton 2 invalide", {type: "error"});
 		}
 	  }
 	  if (!activityObject.args.activity.buttons.length) {
@@ -3997,7 +3996,7 @@ const changelog = {
 	  return activityObject;
 	}
 	updateSettings() {
-	  BdApi.saveData("AutoStartRichPresence", "parametres", this.settings);
+	  BdApi.saveData("AutoStartRichPresence", "settings", this.settings);
 	}
 	updateProfiles() {
 	  BdApi.saveData("AutoStartRichPresence", "profiles", this.profiles);
@@ -4021,19 +4020,19 @@ const changelog = {
 	  let reloadRPCConfigGroup;
 	  let reloadEditProfileGroup;
 	  const profileInputs = new Map([
-		["name", new window.ZeresPluginLibrary.Settings.Textbox("Profile Name", "The name of this profile. Has no impact on the rich presence.", this.profiles[this.session.editingProfile]?.name || "", val => {this.profiles[this.session.editingProfile].name = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["clientID", new window.ZeresPluginLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.profiles[this.session.editingProfile]?.clientID || "", val => {this.profiles[this.session.editingProfile].clientID = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["details", new window.ZeresPluginLibrary.Settings.Textbox("Details", "The line that goes after your game's name.", this.profiles[this.session.editingProfile]?.details || "", val => {this.profiles[this.session.editingProfile].details = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["state", new window.ZeresPluginLibrary.Settings.Textbox("State", "The line that goes after the details.", this.profiles[this.session.editingProfile]?.state || "", val => {this.profiles[this.session.editingProfile].state = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["largeImageKey", new window.ZeresPluginLibrary.Settings.Textbox("Large Image Key", "The name of the asset for your large image.", this.profiles[this.session.editingProfile]?.largeImageKey || "", val => {this.profiles[this.session.editingProfile].largeImageKey = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["largeImageText", new window.ZeresPluginLibrary.Settings.Textbox("Large Image Text", "The text that appears when your large image is hovered over.", this.profiles[this.session.editingProfile]?.largeImageText || "", val => {this.profiles[this.session.editingProfile].largeImageText = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["smallImageKey", new window.ZeresPluginLibrary.Settings.Textbox("Small Image Key", "The name of the asset for your small image.", this.profiles[this.session.editingProfile]?.smallImageKey || "", val => {this.profiles[this.session.editingProfile].smallImageKey = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["smallImageText", new window.ZeresPluginLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.profiles[this.session.editingProfile]?.smallImageText || "", val => {this.profiles[this.session.editingProfile].smallImageText = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["enableStartTime", new window.ZeresPluginLibrary.Settings.Switch("Enable Start Time", "Displays the amount of time your Rich Presence is enabled.", this.profiles[this.session.editingProfile]?.enableStartTime, val => {this.profiles[this.session.editingProfile].enableStartTime = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["button1Label", new window.ZeresPluginLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.profiles[this.session.editingProfile]?.button1Label || "", val => {this.profiles[this.session.editingProfile].button1Label = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["button1URL", new window.ZeresPluginLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.profiles[this.session.editingProfile]?.button1URL || "", val => {this.profiles[this.session.editingProfile].button1URL = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["button2Label", new window.ZeresPluginLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.profiles[this.session.editingProfile]?.button2Label || "", val => {this.profiles[this.session.editingProfile].button2Label = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
-		["button2URL", new window.ZeresPluginLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.profiles[this.session.editingProfile]?.button2URL || "", val => {this.profiles[this.session.editingProfile].button2URL = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})]
+		["name", new window.ZeresPluginLibrary.Settings.Textbox("Nom du Profil", "Nom du profil, n'a aucun impact sur le RichPresence.", this.profiles[this.session.editingProfile]?.name || "", val => {this.profiles[this.session.editingProfile].name = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["clientID", new window.ZeresPluginLibrary.Settings.Textbox("Client ID", "l'ID de l'application discord.", this.profiles[this.session.editingProfile]?.clientID || "", val => {this.profiles[this.session.editingProfile].clientID = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["details", new window.ZeresPluginLibrary.Settings.Textbox("Détails", "Ligne qui vient après le nom de l'activité.", this.profiles[this.session.editingProfile]?.details || "", val => {this.profiles[this.session.editingProfile].details = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["state", new window.ZeresPluginLibrary.Settings.Textbox("State", "Ligne qui vient après 'Détails'.", this.profiles[this.session.editingProfile]?.state || "", val => {this.profiles[this.session.editingProfile].state = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["largeImageKey", new window.ZeresPluginLibrary.Settings.Textbox("Large Image Key", "Grande image.", this.profiles[this.session.editingProfile]?.largeImageKey || "", val => {this.profiles[this.session.editingProfile].largeImageKey = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["largeImageText", new window.ZeresPluginLibrary.Settings.Textbox("Large Image Text", "Text affiché quand la grande image est survolé.", this.profiles[this.session.editingProfile]?.largeImageText || "", val => {this.profiles[this.session.editingProfile].largeImageText = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["smallImageKey", new window.ZeresPluginLibrary.Settings.Textbox("Small Image Key", "Petite image.", this.profiles[this.session.editingProfile]?.smallImageKey || "", val => {this.profiles[this.session.editingProfile].smallImageKey = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["smallImageText", new window.ZeresPluginLibrary.Settings.Textbox("Small Image Text", "Text affiché quand la petite image est survolé.", this.profiles[this.session.editingProfile]?.smallImageText || "", val => {this.profiles[this.session.editingProfile].smallImageText = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["enableStartTime", new window.ZeresPluginLibrary.Settings.Switch("Temps RichPresence", "Affiche ou non le temps du RichPresence.", this.profiles[this.session.editingProfile]?.enableStartTime, val => {this.profiles[this.session.editingProfile].enableStartTime = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["button1Label", new window.ZeresPluginLibrary.Settings.Textbox("Bouton 1 Label", "Label du bouton.", this.profiles[this.session.editingProfile]?.button1Label || "", val => {this.profiles[this.session.editingProfile].button1Label = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["button1URL", new window.ZeresPluginLibrary.Settings.Textbox("Bouton 1 URL", "URL du button.", this.profiles[this.session.editingProfile]?.button1URL || "", val => {this.profiles[this.session.editingProfile].button1URL = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["button2Label", new window.ZeresPluginLibrary.Settings.Textbox("Bouton 2 Label", "Label du bouton.", this.profiles[this.session.editingProfile]?.button2Label || "", val => {this.profiles[this.session.editingProfile].button2Label = val;}, {disabled: !this.profiles[this.session.editingProfile]})],
+		["button2URL", new window.ZeresPluginLibrary.Settings.Textbox("Bouton 2 URL", "URL du button.", this.profiles[this.session.editingProfile]?.button2URL || "", val => {this.profiles[this.session.editingProfile].button2URL = val?.trim?.();}, {disabled: !this.profiles[this.session.editingProfile]})]
 	  ]);
 	  const reloadEditProfileInputFields = () => {
 		for (const [key, profileInput] of profileInputs.entries()) {
@@ -4061,10 +4060,10 @@ const changelog = {
 		}
 	  };
 	  const createActiveProfileDropdown = () => {
-		return new window.ZeresPluginLibrary.Settings.Dropdown("Select Active Profile", "Switching profiles is currently broken; edit activeProfileID in AutoStartRichPresence.config.json.", this.settings.activeProfileID, this.profiles.map((p, id) => ({label: p.name, value: id})), val => {this.settings.activeProfileID = val;}, {disabled: !this.profiles.length});
+		return new window.ZeresPluginLibrary.Settings.Dropdown("Séléctionner le profil actif", "Si la séléction du profil ne marche pas; Modifier le profil manuellement dans 'AutoStartRichPresence.config.json'.", this.settings.activeProfileID, this.profiles.map((p, id) => ({label: p.name, value: id})), val => {this.settings.activeProfileID = val;}, {disabled: !this.profiles.length});
 	  };
 	  const createRPCInjectionSwitch = () => {
-		return new window.ZeresPluginLibrary.Settings.Switch("RPC Event Injection", "Bypasses the use of IPC and hopefully prevents other programs from using their own Rich Presences. Some errors may silently fail, so if something is not working, turn this switch off.", this.settings.rpcEventInjection, val => {
+		return new window.ZeresPluginLibrary.Settings.Switch("Force inject RichPresence", "Bypass l'utilisation des RichPresence d'autres programmes. Des erreurs peuvent arriver, si l'option ne marche pas, veuillez la désactiver.", this.settings.rpcEventInjection, val => {
 		  this.settings.rpcEventInjection = val;
 		  if (val) {
 			this.stopRichPresence();
@@ -4085,7 +4084,7 @@ const changelog = {
 	  let editProfileDropdown = createEditProfileDropdown();
 	  // Regular HTML elements don't need to be recreated when resetting setting groups
 	  const newProfileButton = document.createElement("button");
-	  newProfileButton.innerText = "Create New Profile";
+	  newProfileButton.innerText = "Crée un Profil";
 	  newProfileButton.classList.add(
 		ZeresPluginLibrary.DiscordModules.ButtonData.ButtonColors.BRAND,
 		ZeresPluginLibrary.DiscordModules.ButtonData.ButtonSizes.MEDIUM,
@@ -4097,7 +4096,7 @@ const changelog = {
 		e.preventDefault();
 		e.stopPropagation();
 		this.profiles.push({
-		  name: "New Profile"
+		  name: "Nouveau Profil"
 		});
 		if (this.profiles.length === 1) {
 		  this.settings.activeProfileID = 0;
@@ -4109,7 +4108,7 @@ const changelog = {
 		reloadEditProfileInputFields();
 	  });
 	  const deleteProfileButton = document.createElement("button");
-	  deleteProfileButton.innerText = "Delete Profile";
+	  deleteProfileButton.innerText = "Supprimer le Profil";
 	  deleteProfileButton.classList.add(
 		ZeresPluginLibrary.DiscordModules.ButtonData.ButtonColors.RED,
 		ZeresPluginLibrary.DiscordModules.ButtonData.ButtonSizes.MEDIUM,
@@ -4121,9 +4120,9 @@ const changelog = {
 		e.preventDefault();
 		e.stopPropagation();
 		const profileIDToDelete = this.session.editingProfile;
-		BdApi.showConfirmationModal("Delete Rich Presence Profile", `Are you sure you want to delete ${this.profiles[profileIDToDelete].name || "this profile"}? (This will not delete any Discord Developer Applications.)`, {
+		BdApi.showConfirmationModal("Suppression du profil RichPresence", `Es-tu sûr de vouloir supprimer ${this.profiles[profileIDToDelete].name || "ce profil"} ?`, {
 		  danger: true,
-		  confirmText: "Delete",
+		  confirmText: "Supprimer",
 		  onConfirm: () => {
 			this.deleteProfile(profileIDToDelete);
 			this.updateProfiles();
@@ -4133,7 +4132,7 @@ const changelog = {
 		  }
 		});
 	  });
-	  const rpcConfigGroup = new window.ZeresPluginLibrary.Settings.SettingGroup("Rich Presence Configuration", {collapsible: false, shown: true, callback: () => {clearTimeout(this.currentTimeout); this.currentTimeout = setTimeout(() => {this.updateSettings(); this.updateProfiles(); this.updateRichPresence();}, 5000);}}).appendTo(panel).append(
+	  const rpcConfigGroup = new window.ZeresPluginLibrary.Settings.SettingGroup("Configuration RichPresence", {collapsible: false, shown: true, callback: () => {clearTimeout(this.currentTimeout); this.currentTimeout = setTimeout(() => {this.updateSettings(); this.updateProfiles(); this.updateRichPresence();}, 5000);}}).appendTo(panel).append(
 		activeProfileDropdown,
 		rpcInjectionSwitch,
 		newProfileButton
@@ -4148,7 +4147,7 @@ const changelog = {
 		  newProfileButton
 		);
 	  };
-	  const editProfileGroup = new window.ZeresPluginLibrary.Settings.SettingGroup("Select Profile to Edit", {collapsible: false, shown: true}).appendTo(panel).append(editProfileDropdown, deleteProfileButton);
+	  const editProfileGroup = new window.ZeresPluginLibrary.Settings.SettingGroup("Séléctionner le profil à modifier", {collapsible: false, shown: true}).appendTo(panel).append(editProfileDropdown, deleteProfileButton);
 	  reloadEditProfileGroup = () => {
 		editProfileGroup.group.children[1].textContent = "";
 		editProfileDropdown = createEditProfileDropdown();
@@ -4157,15 +4156,12 @@ const changelog = {
 		  deleteProfileButton
 		);
 	  };
-	  new window.ZeresPluginLibrary.Settings.SettingGroup("Edit Selected Profile", {collapsible: false, shown: true, callback: () => {if (this.session.editingProfile === this.settings.activeProfileID) {clearTimeout(this.currentTimeout); this.currentTimeout = setTimeout(() => {this.updateSettings(); this.updateProfiles(); this.updateRichPresence();}, 5000);}}}).appendTo(panel).append(...profileInputs.values());
+	  new window.ZeresPluginLibrary.Settings.SettingGroup("Modifier le profil séléctionné", {collapsible: false, shown: true, callback: () => {if (this.session.editingProfile === this.settings.activeProfileID) {clearTimeout(this.currentTimeout); this.currentTimeout = setTimeout(() => {this.updateSettings(); this.updateProfiles(); this.updateRichPresence();}, 5000);}}}).appendTo(panel).append(...profileInputs.values());
 	  let div = document.createElement("div");
-	  div.innerHTML = '<a href="https://discordapp.com/developers/applications/me" rel="noreferrer noopener" target="_blank">Create or edit your Discord Rich Presence application here!</a>';
+	  div.innerHTML = '<a href="https://discordapp.com/developers/applications/me" rel="noreferrer noopener" target="_blank">Crée ou Modifier ton application discord.</a>';
 	  panel.appendChild(div);
 	  div = document.createElement("div");
-	  div.innerHTML = '<a href="https://www.youtube.com/watch?v=JIUOreTNj-o" rel="noreferrer noopener" target="_blank">Click here for a video tutorial of how to set up this plugin!</a>';
-	  panel.appendChild(div);
-	  div = document.createElement("div");
-	  div.innerHTML = '<a href="https://github.com/Mega-Mewthree/BetterDiscordPlugins/tree/master/Plugins/AutoStartRichPresence#troubleshooting" rel="noreferrer noopener" target="_blank">Click here for troubleshooting.</a>';
+	  div.innerHTML = '<a href="https://github.com/valddd/" rel="noreferrer noopener" target="_blank">une simple pub pour rappeler que je suis pas gay hein (wza mon bb, pas toi cam)</a>';
 	  panel.appendChild(div);
 	  activeProfileDropdown.getElement().parentNode.style.overflow = "visible";
 	  editProfileDropdown.getElement().parentNode.style.overflow = "visible";
@@ -4196,9 +4192,9 @@ const changelog = {
 	}
 	askToDownloadZeresPluginLibrary() {
 	  return new Promise((resolve, reject) => {
-		BdApi.showConfirmationModal("Library Missing", `The library plugin needed for ${this.constructor.name} is missing. Please click Download Now to install it.`, {
-		  confirmText: "Download Now",
-		  cancelText: "Cancel",
+		BdApi.showConfirmationModal("Bibliothèque manquante", `La bibliothèque nécessaire à ${this.constructor.name} est manquante. Veuillez l'installer.`, {
+		  confirmText: "Installer",
+		  cancelText: "Annuler",
 		  onConfirm: () => {
 			require("request").get("https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js", async (error, response, body) => {
 			  if (error) {
